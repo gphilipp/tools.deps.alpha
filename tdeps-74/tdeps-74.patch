@@ -1,0 +1,12 @@
+--- /usr/local/bin/clojure	2018-12-31 23:03:32.000000000 -0800
++++ clojure	2018-12-31 23:46:11.000000000 -0800
+@@ -171,7 +171,8 @@
+ 
+ # Set dir containing the installed files
+ install_dir=/usr/local/Cellar/clojure/1.10.0.403
+-tools_cp="$install_dir/libexec/clojure-tools-1.10.0.403.jar"
++tools_deps_jar="$HOME/.m2/repository/org/clojure/tools.deps.alpha/0.5.tdeps74-SNAPSHOT/tools.deps.alpha-0.5.tdeps74-SNAPSHOT.jar"
++tools_cp="$tools_deps_jar:$install_dir/libexec/clojure-tools-1.10.0.403.jar"
+ 
+ # Execute resolve-tags command
+ if "$resolve_tags"; then
