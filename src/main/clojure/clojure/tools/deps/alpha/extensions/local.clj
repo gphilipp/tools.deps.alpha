@@ -19,6 +19,18 @@
     ;; maven-builder-support
     [org.apache.maven.model.building UrlModelSource]))
 
+(defn- relative-path?
+  [p]
+  (try
+    (jio/as-relative-path p)
+    (catch Exception _)))
+
+(defn- canonicalize-path
+  [parent child]
+  (if (and parent (relative-path? child))
+    (.getCanonicalPath (jio/file parent child))
+    child))
+
 (defmethod ext/dep-id :local
   [lib {:keys [local/root] :as coord} config]
   {:lib lib
@@ -39,6 +51,11 @@
 
 (defmethod ext/coord-summary :local [lib {:keys [local/root]}]
   (str lib " " root))
+
+(defmethod ext/canonicalize :local
+  [lib {:keys [local/root] :as coord} {:keys [parent] :as config}]
+  (let [[_ parent-coord] parent]
+    [lib (assoc coord :local/root (canonicalize-path (:local/root parent-coord) root))]))
 
 (defn find-pom
   "Find path of pom file in jar file, or nil if it doesn't exist"

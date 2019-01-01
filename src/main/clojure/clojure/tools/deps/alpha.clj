@@ -182,19 +182,19 @@
         (when verbose (println "Expanding" lib coord-id))
         (if-let [action (include-coord? version-map lib use-coord coord-id parents exclusions verbose)]
           (let [use-path (conj parents lib)
-                {manifest-type :deps/manifest :as manifest-info} (ext/manifest-type lib use-coord config)
-                use-coord (merge use-coord manifest-info)
-                children (canonicalize-deps (ext/coord-deps lib use-coord manifest-type config) config)
-                child-paths (map #(conj use-path %) children)
-                vmap' (add-coord version-map lib coord-id use-coord parents action config verbose)]
-            (if vmap'
-              (recur
-                (into q' child-paths)
-                vmap'
-                (if-let [excl (:exclusions use-coord)]
-                  (add-exclusion exclusions use-path excl)
-                  exclusions))
-              (recur q' version-map exclusions)))
+                  {manifest-type :deps/manifest :as manifest-info} (ext/manifest-type lib use-coord config)
+                  use-coord (merge use-coord manifest-info)
+                  children (canonicalize-deps (ext/coord-deps lib use-coord manifest-type config) (assoc config :parent [use-path use-coord]))
+                  child-paths (map #(conj use-path %) children)
+                  vmap' (add-coord version-map lib coord-id use-coord parents action config verbose)]
+              (if vmap'
+                (recur
+                  (into q' child-paths)
+                  vmap'
+                  (if-let [excl (:exclusions use-coord)]
+                    (add-exclusion exclusions use-path excl)
+                    exclusions))
+                (recur q' version-map exclusions)))
           (recur q' version-map exclusions)))
       (do
         (when verbose (println) (println "Version map:") (pprint version-map))
