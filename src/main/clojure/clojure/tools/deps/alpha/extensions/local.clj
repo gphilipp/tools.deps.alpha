@@ -55,7 +55,7 @@
 (defmethod ext/canonicalize :local
   [lib {:keys [local/root] :as coord} {:keys [parent] :as config}]
   (let [[_ parent-coord] parent]
-    [lib (assoc coord :local/root (canonicalize-path (:local/root parent-coord) root))]))
+    [lib (assoc coord :local/root (canonicalize-path (:deps/root parent-coord) root))]))
 
 (defn find-pom
   "Find path of pom file in jar file, or nil if it doesn't exist"
